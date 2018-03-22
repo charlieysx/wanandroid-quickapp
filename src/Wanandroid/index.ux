@@ -1,0 +1,93 @@
+<template>
+    <div class="wanandroid-page">
+      <div class="flexible-tabs">
+        <tabs onchange="changeTabactive" index="{{currentIndex}}">
+          <tab-content class="flexible-tab-content">
+            <div class="tab-content-section">
+              <home></home>
+            </div>
+            <div class="tab-content-section">
+              <classify></classify>
+            </div>
+          </tab-content>
+        </tabs>
+        <div class="flexible-tabbar">
+          <div for="{{(index, item) in tabItems}}" class="tab-item" onclick="clickTabBar(index)">
+            <image class="tab-icon" src="{{item.icon[currentIndex === index ? 1 : 0]}}"></image>
+            <text class="{{currentIndex === index ? 'active' : 'tab-text'}}">{{item.text}}</text>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <import name="home" src="../Home/index"></import>
+  <import name="classify" src="../Classify/index"></import>
+  
+  <script>
+    import router from '@system.router'
+  
+    export default {
+      data() {
+        return {
+          currentIndex: 0,
+          tabItems: [
+            {
+              text: '首页',
+              icon: ['../Common/Image/icon_home.png', '../Common/Image/icon_home_select.png']
+            },
+            {
+              text: '体系',
+              icon: ['../Common/Image/icon_classify.png', '../Common/Image/icon_classify_select.png']
+            }
+          ]
+        }
+      },
+      changeTabactive (evt) {
+        this.changeCurrent(evt.index)
+      },
+      clickTabBar (index) {
+        this.changeCurrent(index)
+      },
+      changeCurrent(index) {
+        this.$page.setTitleBar({ text: this.tabItems[index].text })
+        this.currentIndex = index
+      }
+    }
+  </script>
+  
+  <style>
+  .wanandroid-page .flexible-tabs {
+    display: flex;
+    flex-direction: column;
+  }
+  .flexible-tabs .flexible-tabbar {
+    display: flex;
+    border-top-width: 1px;
+    border-top-color: #eeeeee;
+  }
+  .flexible-tabbar .tab-item {
+    flex: 1;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    font-size: 12px;
+  }
+  .tab-item .tab-icon {
+    width: 56px;
+    height: 56px;
+    padding: 5px;
+  }
+  
+  .tab-item .tab-text {
+    font-size: 20px;
+    color: #aaaaaa;
+  }
+
+  .tab-item .active {
+    font-size: 20px;
+    color: #24b9ff;
+  }
+  </style>
+  

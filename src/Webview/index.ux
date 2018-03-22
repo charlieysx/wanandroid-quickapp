@@ -1,0 +1,18 @@
+<template>
+    <web src="{{ url }}" id="web"></web>
+</template>
+
+<script>
+  import fetch from '@system.fetch'
+  import webview from '@system.webview'
+
+  export default {
+    data: {
+      title: '',
+      url: ''
+    },
+    onInit () {
+      this.$page.setTitleBar({ text: this.title })
+    }
+  }
+</script>

@@ -1,0 +1,205 @@
+<template>
+    <div class="classify-page">
+      <div class="classify">
+        <text class="title">一级分类</text>
+        <list class="classify-list">
+          <block for="{{(index, item) in classifyList}}">
+            <list-item type="parent" class="classify-item" onclick="clickParent(index)">
+              <text class="{{parentIndex === index ? 'active' : 'classify-text'}}">{{ item.name }}</text>
+            </list-item>
+          </block>
+        </list>
+      </div>
+      <div if="classifyList.length > 0" class="classify">
+        <text class="title">二级分类</text>
+        <list class="classify-list">
+            <block for="{{(index, item) in classifyList[parentIndex].children}}">
+              <list-item type="children" class="classify-item" onclick="clickChildren(index)">
+                <text class="{{childrenIndex === index ? 'active' : 'classify-text'}}">{{ item.name }}</text>
+              </list-item>
+            </block>
+        </list>
+      </div>
+      <list class="article-list" onscrollbottom="loadMoreData">
+          <!-- 文章 -->
+          <block for="articleList">
+            <list-item type="article" class="article-item" onclick="openArticle($item.link, $item.projectLink, $item.title)">
+              <div>
+                <text class="tag" show="{{$item.fresh}}">新</text>
+                <text class="text-title">{{$item.title}}</text>
+              </div>
+              <div class="article-tip">
+                  <text class="tip">分类: {{$item.superChapterName}}/{{$item.chapterName}}</text>
+              </div>
+              <div class="article-tip">
+                <text class="tip">作者: {{$item.author}}</text>
+                <text class="time">{{$item.niceDate}}</text>
+              </div>
+            </list-item>
+          </block>
+  
+          <!-- 加载更多，type属性自定义命名为loadMore -->
+          <list-item type="loadMore" class="load-more">
+            <progress type="circular" show="{{hasMoreData}}"></progress>
+            <text show="{{hasMoreData}}">加载更多</text>
+            <text show="{{!hasMoreData}}">没有更多了~</text>
+          </list-item>
+        </list>
+    </div>
+</template>
+
+<script>
+  import router from '@system.router'
+  import fetch from '@system.fetch'
+
+  export default {
+    data: {
+      classifyList: [],
+      parentIndex: 0,
+      childrenIndex: 0,
+      articleList: [],
+      page: 0,
+      cid: '',
+      hasMoreData: true
+    },
+    onInit () {
+      this.getClassifyList()
+    },
+    getClassifyList() {
+      fetch.fetch({
+        url:"http://www.wanandroid.com/tree/json",
+        success:function(data){
+          this.classifyList = JSON.parse(data.data).data;
+          this.clickParent(0);
+        }.bind(this),
+        fail: function(data, code) {
+          console.log("handling fail, code=" + code);
+        }
+      })
+    },
+    clickParent(index) {
+      this.parentIndex = index;
+      this.clickChildren(0);
+    },
+    clickChildren(index) {
+      this.childrenIndex = index;
+      this.cid = this.classifyList[this.parentIndex].children[this.childrenIndex].id;
+      this.page = 0;
+      this.getArticle()
+    },
+    getArticle() {
+      fetch.fetch({
+        url: "http://www.wanandroid.com/article/list/" + this.page + "/json?cid=" + this.cid,
+        success:function(data){
+          var value = JSON.parse(data.data).data;
+          this.hasMoreData = !value.over;
+          if(this.page > 0) {
+            this.articleList = this.articleList.concat(value.datas);
+          } else {
+            this.articleList = value.datas;
+          }
+        }.bind(this),
+        fail: function(data, code) {
+          console.log("handling fail, code=" + code);
+        }
+      })
+    },
+    loadMoreData() {
+      if(this.hasMoreData) {
+        this.page++;
+        this.getArticle();
+      }
+    },
+    openArticle(link, projectLink, title) {
+      var url = projectLink === '' ? link : projectLink;
+      if(url !== '') {
+        router.push({
+          uri: 'Webview',
+          params: { 
+            title: title,
+            url: url
+          }
+        })
+      }
+    }
+  }
+</script>
+
+<style>
+  .classify-page {
+    display: flex;
+    flex-direction: column;
+  }
+  .classify {
+    padding: 10px;
+  }
+  .classify .title {
+    width: 160px;
+  }
+  .classify .classify-list {
+    display: flex;
+    flex-direction: row;
+    height: 60px;
+  }
+  .classify-item .classify-text {
+    padding: 10px;
+  }
+  .classify-item .active {
+    padding: 10px;
+    color: #ffffff;
+    background-color: #24b9ff;
+    border-radius: 5px;
+  }
+  .article-list {
+    flex: 1;
+  }
+  .article-item {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    border-bottom-width: 1px;
+    border-bottom-color: #eeeeee;
+  }
+  .text-tip {
+    width: 100%;
+    padding: 10px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-bottom-width: 1px;
+    border-bottom-color: #eeeeee;
+  }
+  .article-item .text-title {
+    font-size: 30px;
+    color: #2e3135;
+    text-overflow: ellipsis;
+    lines: 1;
+    margin-bottom: 5px;
+  }
+  .article-item .article-tip {
+    display: flex;
+    flex-direction: row;
+  }
+  .article-tip .tip, .article-tip .time {
+    font-size: 26px;
+    color: #999999;
+  }
+  .time {
+    flex: 1;
+    text-align: right;
+  }
+  .tag {
+    font-size: 22px;
+    color: #FF0000;
+    border: 1px;
+    border-color: #FF0000;
+    margin-right: 10px;
+    padding: 2px;
+    height: 32px;
+  }
+  .load-more {
+    padding: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+</style>

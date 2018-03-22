@@ -1,0 +1,172 @@
+<template>
+    <list class="home-page" onscrollbottom="loadMoreData">
+        <!-- 顶部图片 -->
+        <list-item type="banner">
+            <swiper class="banner" autoplay="true" interval="4000">
+              <stack class="banner" for="{{bannerlist}}">
+                <image class="banner-image" src="{{$item.imagePath}}" onclick="openArticle($item.url, '', $item.title)"></image>
+                <text class="banner-title">{{$item.title}}</text>
+              </stack>
+            </swiper>
+        </list-item>
+        <list-item type="tip">
+            <text class="text-tip">最新博文</text>
+        </list-item>
+
+        <!-- 文章 -->
+        <block for="articleList">
+          <list-item type="article" class="article-item" onclick="openArticle($item.link, $item.projectLink, $item.title)">
+            <div>
+              <text class="tag" show="{{$item.fresh}}">新</text>
+              <text class="text-title">{{$item.title}}</text>
+            </div>
+            <div class="article-tip">
+                <text class="tip">分类: {{$item.superChapterName}}/{{$item.chapterName}}</text>
+            </div>
+            <div class="article-tip">
+              <text class="tip">作者: {{$item.author}}</text>
+              <text class="time">{{$item.niceDate}}</text>
+            </div>
+          </list-item>
+        </block>
+
+        <!-- 加载更多，type属性自定义命名为loadMore -->
+        <list-item type="loadMore" class="load-more">
+          <progress type="circular" show="{{hasMoreData}}"></progress>
+          <text show="{{hasMoreData}}">加载更多</text>
+          <text show="{{!hasMoreData}}">没有更多了~</text>
+        </list-item>
+      </list>
+</template>
+
+<script>
+  import router from '@system.router'
+  import fetch from '@system.fetch'
+
+  export default {
+    data: {
+      bannerlist: [],
+      articleList: [],
+      page: 0,
+      hasMoreData: true
+    },
+    onInit () {
+      this.getBanner();
+      this.page = 0;
+      this.getArticle();
+    },
+    getBanner() {
+      fetch.fetch({
+        url:"http://www.wanandroid.com/banner/json",
+        success:function(data){
+          this.bannerlist = JSON.parse(data.data).data;
+        }.bind(this),
+        fail: function(data, code) {
+          console.log("handling fail, code=" + code);
+        }
+      })
+    },
+    getArticle() {
+      fetch.fetch({
+        url:"http://www.wanandroid.com/article/list/" + this.page + "/json",
+        success:function(data){
+          var value = JSON.parse(data.data).data;
+          this.hasMoreData = !value.over;
+          if(this.page > 0) {
+            this.articleList = this.articleList.concat(value.datas);
+          } else {
+            this.$emitElement('refresh', {refreshing: false}, 'refresh')
+            this.articleList = value.datas;
+          }
+        }.bind(this),
+        fail: function(data, code) {
+          console.log("handling fail, code=" + code);
+        }
+      })
+    },
+    loadMoreData() {
+      if(this.hasMoreData) {
+        this.page++;
+        this.getArticle();
+      }
+    },
+    openArticle(link, projectLink, title) {
+      var url = projectLink === '' ? link : projectLink;
+      if(url !== '') {
+        router.push({
+          uri: 'Webview',
+          params: { 
+            title: title,
+            url: url
+          }
+        })
+      }
+    }
+  }
+</script>
+
+<style>
+  .banner, .banner-image {
+    width: 100%;
+    height: 420px;
+  }
+  .banner-title {
+    text-overflow: ellipsis;
+    lines: 1;
+    text-align: center;
+    height: 90px;
+    width: 100%;
+    color: #ffffff;
+    background-color: #000000;
+    opacity: 0.5;
+  }
+  .article-item {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    border-bottom-width: 1px;
+    border-bottom-color: #eeeeee;
+  }
+  .text-tip {
+    width: 100%;
+    padding: 10px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-bottom-width: 1px;
+    border-bottom-color: #eeeeee;
+  }
+  .article-item .text-title {
+    font-size: 30px;
+    color: #2e3135;
+    text-overflow: ellipsis;
+    lines: 1;
+    margin-bottom: 5px;
+  }
+  .article-item .article-tip {
+    display: flex;
+    flex-direction: row;
+  }
+  .article-tip .tip, .article-tip .time {
+    font-size: 26px;
+    color: #999999;
+  }
+  .time {
+    flex: 1;
+    text-align: right;
+  }
+  .tag {
+    font-size: 22px;
+    color: #FF0000;
+    border: 1px;
+    border-color: #FF0000;
+    margin-right: 10px;
+    padding: 2px;
+    height: 32px;
+  }
+  .load-more {
+    padding: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+</style>
