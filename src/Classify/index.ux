@@ -20,31 +20,33 @@
             </block>
         </list>
       </div>
-      <list class="article-list" onscrollbottom="loadMoreData">
-          <!-- 文章 -->
-          <block for="articleList">
-            <list-item type="article" class="article-item" onclick="openArticle($item.link, $item.projectLink, $item.title)">
-              <div>
-                <text class="tag" show="{{$item.fresh}}">新</text>
-                <text class="text-title">{{$item.title}}</text>
-              </div>
-              <div class="article-tip">
-                  <text class="tip">分类: {{$item.superChapterName}}/{{$item.chapterName}}</text>
-              </div>
-              <div class="article-tip">
-                <text class="tip">作者: {{$item.author}}</text>
-                <text class="time">{{$item.niceDate}}</text>
-              </div>
+      <refresh @refresh="refresh" refreshing="{{isRefreshing}}">
+        <list class="article-list" onscrollbottom="loadMoreData">
+            <!-- 文章 -->
+            <block for="articleList">
+              <list-item type="article" class="article-item" onclick="openArticle($item.link, $item.projectLink, $item.title)">
+                <div>
+                  <text class="tag" show="{{$item.fresh}}">新</text>
+                  <text class="text-title">{{$item.title}}</text>
+                </div>
+                <div class="article-tip">
+                    <text class="tip">分类: {{$item.superChapterName}}/{{$item.chapterName}}</text>
+                </div>
+                <div class="article-tip">
+                  <text class="tip">作者: {{$item.author}}</text>
+                  <text class="time">{{$item.niceDate}}</text>
+                </div>
+              </list-item>
+            </block>
+    
+            <!-- 加载更多，type属性自定义命名为loadMore -->
+            <list-item type="loadMore" class="load-more">
+              <progress type="circular" show="{{hasMoreData}}"></progress>
+              <text show="{{hasMoreData}}">加载更多</text>
+              <text show="{{!hasMoreData}}">没有更多了~</text>
             </list-item>
-          </block>
-  
-          <!-- 加载更多，type属性自定义命名为loadMore -->
-          <list-item type="loadMore" class="load-more">
-            <progress type="circular" show="{{hasMoreData}}"></progress>
-            <text show="{{hasMoreData}}">加载更多</text>
-            <text show="{{!hasMoreData}}">没有更多了~</text>
-          </list-item>
-        </list>
+          </list>
+        </refresh>
     </div>
 </template>
 
@@ -60,7 +62,8 @@
       articleList: [],
       page: 0,
       cid: '',
-      hasMoreData: true
+      hasMoreData: true,
+      isRefreshing: false
     },
     onInit () {
       this.getClassifyList()
@@ -96,12 +99,14 @@
           if(this.page > 0) {
             this.articleList = this.articleList.concat(value.datas);
           } else {
+            this.isRefreshing = false;
             this.articleList = value.datas;
           }
         }.bind(this),
         fail: function(data, code) {
+          this.isRefreshing = false;
           console.log("handling fail, code=" + code);
-        }
+        }.bind(this)
       })
     },
     loadMoreData() {
@@ -121,6 +126,11 @@
           }
         })
       }
+    },
+    refresh(evt) {
+      this.isRefreshing = evt.refreshing;
+      this.page = 0;
+      this.getArticle();
     }
   }
 </script>

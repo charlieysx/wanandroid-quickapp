@@ -315,5 +315,28 @@ swiper的用法，直接使用，里面使用for循环显示图片等，设置au
 项目地址：https://github.com/CB-ysx/wanandroid-quickapp
 
 #### 五、总结
-开发这个应用，感觉还是挺方便的，挺快的（无论是启动还是开发），但是目前文档还不够完善，网上教程也几乎没有，自己摸索还是挺累的，很多组件都还不怎么会用，比如refresh都还不知道如何关闭刷新状态。
+开发这个应用，感觉还是挺方便的，挺快的（无论是启动还是开发），但是目前文档还不够完善，网上教程也几乎没有，自己摸索还是挺累的，很多组件都还不怎么会用。
 总而言之，对于学前端的人（虽然我是android开发仔）来说，学习成本不会很高，有空就学学新东西，反正学的是自己的，技多不压身。
+
+#### 六、补充
+* refresh下拉刷新组件的使用
+```
+<refresh @refresh="refresh" refreshing="{{isRefreshing}}">
+...
+</refresh>
+
+...
+  export default {
+    data: {
+      isRefreshing: false
+    },
+    ...
+    refresh(evt) {
+      this.isRefreshing = evt.refreshing;
+    },
+    closeRefresh() {
+      this.isRefreshing = false;
+    }
+  }
+...
+```

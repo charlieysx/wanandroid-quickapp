@@ -1,4 +1,5 @@
 <template>
+    <refresh @refresh="refresh" refreshing="{{isRefreshing}}">
     <list class="home-page" onscrollbottom="loadMoreData">
         <!-- 顶部图片 -->
         <list-item type="banner">
@@ -37,6 +38,7 @@
           <text show="{{!hasMoreData}}">没有更多了~</text>
         </list-item>
       </list>
+    </refresh>
 </template>
 
 <script>
@@ -48,7 +50,8 @@
       bannerlist: [],
       articleList: [],
       page: 0,
-      hasMoreData: true
+      hasMoreData: true,
+      isRefreshing: false
     },
     onInit () {
       this.getBanner();
@@ -75,13 +78,14 @@
           if(this.page > 0) {
             this.articleList = this.articleList.concat(value.datas);
           } else {
-            this.$emitElement('refresh', {refreshing: false}, 'refresh')
+            this.isRefreshing = false;
             this.articleList = value.datas;
           }
         }.bind(this),
         fail: function(data, code) {
+          this.isRefreshing = false;
           console.log("handling fail, code=" + code);
-        }
+        }.bind(this)
       })
     },
     loadMoreData() {
@@ -101,6 +105,11 @@
           }
         })
       }
+    },
+    refresh(evt) {
+      this.isRefreshing = evt.refreshing;
+      this.page = 0;
+      this.getArticle();
     }
   }
 </script>
