@@ -319,7 +319,7 @@ swiper的用法，直接使用，里面使用for循环显示图片等，设置au
 总而言之，对于学前端的人（虽然我是android开发仔）来说，学习成本不会很高，有空就学学新东西，反正学的是自己的，技多不压身。
 
 #### 六、补充
-* refresh下拉刷新组件的使用
+##### 1、refresh下拉刷新组件的使用
 ```
 <refresh @refresh="refresh" refreshing="{{isRefreshing}}">
 ...
@@ -340,7 +340,7 @@ swiper的用法，直接使用，里面使用for循环显示图片等，设置au
   }
 ...
 ```
-* list中list-item复用问题
+##### 2、list中list-item复用问题
 使用list时，list-item相同type类型的item会复用，所以会导致一个问题，比如同一个list-item，非选中时背景为白色，选中时背景为蓝色，按一般的写法是这样：
 ```
 <list-item>

@@ -32,7 +32,7 @@
         </block>
 
         <!-- 加载更多，type属性自定义命名为loadMore -->
-        <list-item type="loadMore" class="load-more">
+        <list-item type="loadMore" class="load-more" if="articleList.length > 0">
           <progress type="circular" show="{{hasMoreData}}"></progress>
           <text show="{{hasMoreData}}">加载更多</text>
           <text show="{{!hasMoreData}}">没有更多了~</text>
@@ -43,7 +43,10 @@
 
 <script>
   import router from '@system.router'
-  import fetch from '@system.fetch'
+  import {
+    getBanner,
+    getArticle
+  } from '../Common/Api/home'
 
   export default {
     data: {
@@ -54,26 +57,16 @@
       isRefreshing: false
     },
     onInit () {
-      this.getBanner();
-      this.page = 0;
-      this.getArticle();
+      this.refresh({refreshing: true});
     },
     getBanner() {
-      fetch.fetch({
-        url:"http://www.wanandroid.com/banner/json",
-        success:function(data){
-          this.bannerlist = JSON.parse(data.data).data;
-        }.bind(this),
-        fail: function(data, code) {
-          console.log("handling fail, code=" + code);
-        }
-      })
+      getBanner(function(data) {
+        this.bannerlist = data.data;
+      }.bind(this))
     },
     getArticle() {
-      fetch.fetch({
-        url:"http://www.wanandroid.com/article/list/" + this.page + "/json",
-        success:function(data){
-          var value = JSON.parse(data.data).data;
+      getArticle(this.page, function(data){
+          var value = data.data;
           this.hasMoreData = !value.over;
           if(this.page > 0) {
             this.articleList = this.articleList.concat(value.datas);
@@ -81,12 +74,11 @@
             this.isRefreshing = false;
             this.articleList = value.datas;
           }
-        }.bind(this),
-        fail: function(data, code) {
+        }.bind(this), 
+        function(data, code) {
           this.isRefreshing = false;
-          console.log("handling fail, code=" + code);
         }.bind(this)
-      })
+      )
     },
     loadMoreData() {
       if(this.hasMoreData) {
@@ -109,6 +101,7 @@
     refresh(evt) {
       this.isRefreshing = evt.refreshing;
       this.page = 0;
+      this.getBanner();
       this.getArticle();
     }
   }

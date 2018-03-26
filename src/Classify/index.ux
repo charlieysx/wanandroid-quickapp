@@ -4,7 +4,7 @@
         <text class="title">一级分类</text>
         <list class="classify-list">
           <block for="{{(index, item) in classifyList}}">
-              <list-item type="parent-normal" class="classify-item" onclick="clickParent(index)">
+              <list-item type="parent" class="classify-item" onclick="clickParent(index)">
                 <text class="{{ parentIndex === index ? 'active' : 'classify-text' }}">{{ item.name }}</text>
               </list-item>
           </block>
@@ -14,7 +14,7 @@
         <text class="title">二级分类</text>
         <list class="classify-list">
             <block for="{{(index, item) in classifyList[parentIndex].children}}">
-                <list-item type="children-normal" class="classify-item" onclick="clickChildren(index)">
+                <list-item type="children" class="classify-item" onclick="clickChildren(index)">
                   <text class="{{ childrenIndex === index ? 'active' : 'classify-text' }}">{{ item.name }}</text>
                 </list-item>
             </block>
@@ -52,7 +52,10 @@
 
 <script>
   import router from '@system.router'
-  import fetch from '@system.fetch'
+  import {
+    getClassifyList,
+    getArticleByClassify
+  } from '../Common/Api/classify'
 
   export default {
     data: {
@@ -69,16 +72,10 @@
       this.getClassifyList()
     },
     getClassifyList() {
-      fetch.fetch({
-        url:"http://www.wanandroid.com/tree/json",
-        success:function(data){
-          this.classifyList = JSON.parse(data.data).data;
-          this.clickParent(0);
-        }.bind(this),
-        fail: function(data, code) {
-          console.log("handling fail, code=" + code);
-        }
-      })
+      getClassifyList(function success(data) {
+        this.classifyList = data.data;
+        this.clickParent(0);
+      }.bind(this))
     },
     clickParent(index) {
       this.parentIndex = index;
@@ -92,10 +89,9 @@
       this.getArticle()
     },
     getArticle() {
-      fetch.fetch({
-        url: "http://www.wanandroid.com/article/list/" + this.page + "/json?cid=" + this.cid,
-        success:function(data){
-          var value = JSON.parse(data.data).data;
+      getArticleByClassify(this.page, this.cid, 
+        function success(data) {
+          var value = data.data;
           this.hasMoreData = !value.over;
           if(this.page > 0) {
             this.articleList = this.articleList.concat(value.datas);
@@ -103,12 +99,10 @@
             this.isRefreshing = false;
             this.articleList = value.datas;
           }
-        }.bind(this),
-        fail: function(data, code) {
+        }.bind(this), 
+        function fail(data, code) {
           this.isRefreshing = false;
-          console.log("handling fail, code=" + code);
-        }.bind(this)
-      })
+        })
     },
     loadMoreData() {
       if(this.hasMoreData) {
