@@ -340,3 +340,43 @@ swiper的用法，直接使用，里面使用for循环显示图片等，设置au
   }
 ...
 ```
+* list中list-item复用问题
+使用list时，list-item相同type类型的item会复用，所以会导致一个问题，比如同一个list-item，非选中时背景为白色，选中时背景为蓝色，按一般的写法是这样：
+```
+<list-item>
+  <text class="{{ currentIndex === index ? 'active' : 'normal' }}">text</text>
+</list-item>
+
+...
+normal: {
+  padding: 10px;
+}
+active: {
+  padding: 10px;
+  color: #ffffff;
+  background-color: #24b9ff;
+  border-radius: 5px;
+}
+...
+```
+如果在没有复用的情况下，这样写是没问题的，但item被复用时，加入item1被选中，此时背景为蓝色，也就是有了active这个类，在后面的item中，有可能被重新用到了，如果被用在非选中的item时，因为normal没有设置字体颜色和背景颜色，所以此时的item的背景颜色依然为蓝色，就会导致出现多个item看起来是选中状态。
+
+解决方法：
+* 第一种方法：给normal设置字体颜色和背景颜色
+```
+normal: {
+  padding: 10px;
+  color: #2e3135;
+  background-color: #ffffff;
+  border-radius: 5px;
+}
+```
+* 第二种方法：使用两个不用type的item（不推荐，因为如果item比较复杂的话代码量会增多，而其他性能可能会受影响）
+```
+<list-item if="currentIndex === index" type="active">
+  <text class="active">text</text>
+</list-item>
+<list-item else type="normal">
+  <text class="normal">text</text>
+</list-item>
+```

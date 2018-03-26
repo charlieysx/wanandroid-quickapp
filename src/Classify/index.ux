@@ -4,9 +4,9 @@
         <text class="title">一级分类</text>
         <list class="classify-list">
           <block for="{{(index, item) in classifyList}}">
-            <list-item type="parent" class="classify-item" onclick="clickParent(index)">
-              <text class="{{parentIndex === index ? 'active' : 'classify-text'}}">{{ item.name }}</text>
-            </list-item>
+              <list-item type="parent-normal" class="classify-item" onclick="clickParent(index)">
+                <text class="{{ parentIndex === index ? 'active' : 'classify-text' }}">{{ item.name }}</text>
+              </list-item>
           </block>
         </list>
       </div>
@@ -14,9 +14,9 @@
         <text class="title">二级分类</text>
         <list class="classify-list">
             <block for="{{(index, item) in classifyList[parentIndex].children}}">
-              <list-item type="children" class="classify-item" onclick="clickChildren(index)">
-                <text class="{{childrenIndex === index ? 'active' : 'classify-text'}}">{{ item.name }}</text>
-              </list-item>
+                <list-item type="children-normal" class="classify-item" onclick="clickChildren(index)">
+                  <text class="{{ childrenIndex === index ? 'active' : 'classify-text' }}">{{ item.name }}</text>
+                </list-item>
             </block>
         </list>
       </div>
@@ -88,6 +88,7 @@
       this.childrenIndex = index;
       this.cid = this.classifyList[this.parentIndex].children[this.childrenIndex].id;
       this.page = 0;
+      this.isRefreshing = true;
       this.getArticle()
     },
     getArticle() {
@@ -153,6 +154,9 @@
   }
   .classify-item .classify-text {
     padding: 10px;
+    color: #2e3135;
+    background-color: #ffffff;
+    border-radius: 5px;
   }
   .classify-item .active {
     padding: 10px;
