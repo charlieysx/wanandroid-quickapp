@@ -1,0 +1,181 @@
+<template>
+  <div>
+    <stack if="{{ visible }}" class="dialog">
+      <div class="backdrop" style="opacity : {{ opacity }}"></div>
+      <div class="dialog-container {{ dialogVisible ? 'fly-in' : 'fly-out' }}">
+        <div class='dialog-title'>
+          <text>{{title}}</text>
+        </div>
+        <div class="dialog-body">
+          <text>{{message}}</text>
+        </div>
+        <div class="dialog-btn">
+          <div class="btn-item" for="(idx, btn) in btnList" @click="onClick(idx)"
+               style="border-left-width: {{ idx === 0 ? 0 : 1 }}px;">
+            <text style="color: {{ btn.color ? btn.color : '#909399' }}">{{btn.label}}</text>
+          </div>
+        </div>
+      </div>
+    </stack>
+  </div>
+</template>
+
+<script>
+
+export default {
+  props: ['visible', 'title', 'message', 'btnList'],
+  propsDefault: {
+    visible: false,
+    title: '提示',
+    btnList: [
+      {
+        label: 'OK',
+        color: '#909399'
+      }
+    ]
+  },
+  data: () => ({
+    opacity: 0,
+    dialogVisible: false
+  }),
+  onInit () {
+    this.$watch('visible', 'showdialog')
+  },
+  showdialog () {
+    if (this.visible) {
+      this.dialogVisible = true
+      let id = setInterval(() => {
+        this.opacity += 0.05
+        if (this.opacity > 1) {
+          this.opacity = 1
+          clearInterval(id)
+        }
+      }, 16)
+    } else {
+      this.onClose()
+    }
+  },
+  onClick (idx) {
+    this.onClose()
+    this.$dispatch('click', { idx })
+  },
+  onClose () {
+    let id = setInterval(() => {
+      this.dialogVisible = false
+      this.opacity -= 0.05
+      if (this.opacity <= 0) {
+        clearInterval(id)
+        this.opacity = 0
+        this.$dispatch('close')
+      }
+    }, 16)
+  }
+}
+</script>
+
+<style>
+  .dialog {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dialog-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+    width: 450px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    border: 1px solid #dcdfe6;
+  }
+
+  .dialog-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #303133;
+    padding: 10px 0;
+    width: 100%;
+  }
+
+  .dialog-title > text {
+    font-size: 35px;
+    font-weight: bold;
+  }
+
+  .dialog-body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #888888;
+    font-size: 30px;
+    padding: 20px 15px 30px 15px;
+    width: 100%;
+  }
+
+  .dialog-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 80px;
+    border: solid #dcdfe6;
+    border-top-width: 1px;
+  }
+
+  .btn-item {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    border: solid #dddddd;
+  }
+
+  .backdrop {
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+
+  .fly-in {
+    animation-name: flyIn;
+    animation-duration: 500ms;
+    animation-timing-function: ease-out;
+  }
+
+  .fly-out {
+    animation-name: flyOut;
+    animation-duration: 500ms;
+    animation-timing-function: ease-in;
+  }
+
+  @keyframes flyIn {
+    from {
+      opacity: 0;
+      transform: translateY(-3000px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(1px);
+    }
+  }
+
+  @keyframes flyOut {
+    from {
+      opacity: 1;
+      transform: translateY(1px);
+    }
+
+    to {
+      opacity: 0;
+      transform: translateY(-3000px);
+    }
+  }
+</style>

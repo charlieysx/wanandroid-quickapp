@@ -1,15 +1,27 @@
 <template>
   <div class="me-page">
-      <div if="isLogin">
-        
+      <div class="me" if="isLogin">
+        <stack class="header">
+          <image class="avtar" src="../Common/Image/android.jpg"></image>
+          <text class="username">{{ loginData.username }}</text>
+        </stack>
+        <div class="item-title"></div>
+        <text class="item border-bottom">收藏的文章</text>
+        <text class="item">收藏的网站</text>
+        <div class="item-title"></div>
+        <text class="item border-bottom">关于</text>
+        <div class="item-title"></div>
+        <text class="item border-bottom" onclick="openDialog">退出登录</text>
       </div>
       <login elif="{{ view === 'login' }}" ontoview="toView" onsuccess="loginSuccess"></login>
       <register elif="{{ view === 'register' }}" ontoview="toView" onsuccess="registerSuccess"></register>
+      <c-dialog title="提示" visible="{{ showDialog }}" onclose="onClose" message="确认退出登录？" onclick="onClick" btn-list="{{ dialogBtn }}"></c-dialog>
   </div>
 </template>
 
 <import name="login" src="../Auth/login"></import>
 <import name="register" src="../Auth/register"></import>
+<import name="c-dialog" src="../Common/Component/CDialog/index"></import>
 
 <script>
 var storage = require('@system.storage')
@@ -18,10 +30,32 @@ export default {
   data() {
     return {
       isLogin: false,
-      view: 'login'
+      view: 'login',
+      loginData: {},
+      showDialog: false,
+      dialogBtn: [
+        {
+          label: '退出'
+        }, 
+        {
+          label: '取消'
+        }
+      ]
     }
   },
   onInit() {
+    storage.get({
+      key: 'user',
+      success: function(data) {
+        this.loginData = {}
+        if(data != '') {
+          this.loginData = JSON.parse(data)
+        }
+      }.bind(this),
+      fail: function(data, code) {
+        this.loginData = {}
+      }.bind(this)
+    })
     storage.get({
       key: 'isLogin',
       success: function(data) {
@@ -37,9 +71,11 @@ export default {
   },
   loginSuccess({ detail: { data } }) {
     this.isLogin = true
+    this.loginData = data
   },
   registerSuccess({ detail: { data } }) {
     this.isLogin = true
+    this.loginData = data
   },
   signout() {
     this.isLogin = false
@@ -47,14 +83,75 @@ export default {
     storage.delete({
       key: 'auth'
     })
+    storage.delete({
+      key: 'user'
+    })
     storage.set({
       key: 'isLogin',
       value: 'false'
     })
+  },
+  openDialog () {
+    this.showDialog = true
+  },
+  onClose () {
+    this.showDialog = false
+  },
+  onClick ({ detail: { idx } }) {
+    if(idx === 0) {
+      this.signout()
+    }
   }
 }
 </script>
 
 <style>
+.me {
+  display: flex;
+  flex-direction: column;
+}
 
+.header {
+  width: 100%;
+  height: 400px;
+}
+
+.avtar {
+  width: 100%;
+  height: 100%;
+}
+
+.username {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  font-size: 56px;
+  color: #ffffff;
+  background-color: #000000;
+  opacity: 0.7;
+}
+
+.header-email {
+  height: 60px;
+  color: #999999
+}
+
+.item-title {
+  width: 100%;
+  height: 30px;
+  background-color: #dddddd;
+  color: #ffffff;
+}
+
+.item {
+  width: 100%;
+  padding: 20px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+.border-bottom {
+  border-bottom-width: 1px;
+  border-bottom-color: #eeeeee;
+}
 </style>

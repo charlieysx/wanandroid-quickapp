@@ -18,11 +18,15 @@ export function login(params, success = null, fail = null) {
       }
     })
     storage.set({
+      key: 'user',
+      value: value.data
+    })
+    storage.set({
       key: 'isLogin',
       value: true
     })
     if(success !== null) {
-      success(value)
+      success(value.data)
     }
   }, function(data, code) {
     if(fail !== null) {
@@ -48,11 +52,15 @@ export function register(params, success = null, fail = null) {
       }
     })
     storage.set({
+      key: 'user',
+      value: value.data
+    })
+    storage.set({
       key: 'isLogin',
       value: 'true'
     })
     if(success !== null) {
-      success(value)
+      success(value.data)
     }
   }, function(data, code) {
     if(fail !== null) {
