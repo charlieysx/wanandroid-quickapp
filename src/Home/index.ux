@@ -57,37 +57,37 @@
       isRefreshing: false
     },
     onInit () {
-      this.refresh({refreshing: true});
+      this.refresh({refreshing: true})
     },
     getBanner() {
       getBanner(function(data) {
-        this.bannerlist = data.data;
+        this.bannerlist = data.data
       }.bind(this))
     },
     getArticle() {
       getArticle(this.page, function(data){
           var value = data.data;
-          this.hasMoreData = !value.over;
+          this.hasMoreData = !value.over
           if(this.page > 0) {
-            this.articleList = this.articleList.concat(value.datas);
+            this.articleList = this.articleList.concat(value.datas)
           } else {
-            this.isRefreshing = false;
-            this.articleList = value.datas;
+            this.isRefreshing = false
+            this.articleList = value.datas
           }
         }.bind(this), 
         function(data, code) {
-          this.isRefreshing = false;
+          this.isRefreshing = false
         }.bind(this)
       )
     },
     loadMoreData() {
       if(this.hasMoreData) {
-        this.page++;
-        this.getArticle();
+        this.page++
+        this.getArticle()
       }
     },
     openArticle(link, projectLink, title) {
-      var url = projectLink === '' ? link : projectLink;
+      var url = projectLink === '' ? link : projectLink
       if(url !== '') {
         router.push({
           uri: 'Webview',
@@ -99,10 +99,10 @@
       }
     },
     refresh(evt) {
-      this.isRefreshing = evt.refreshing;
-      this.page = 0;
-      this.getBanner();
-      this.getArticle();
+      this.isRefreshing = evt.refreshing
+      this.page = 0
+      this.getBanner()
+      this.getArticle()
     }
   }
 </script>

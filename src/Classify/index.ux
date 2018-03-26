@@ -74,44 +74,44 @@
     getClassifyList() {
       getClassifyList(function success(data) {
         this.classifyList = data.data;
-        this.clickParent(0);
+        this.clickParent(0)
       }.bind(this))
     },
     clickParent(index) {
       this.parentIndex = index;
-      this.clickChildren(0);
+      this.clickChildren(0)
     },
     clickChildren(index) {
-      this.childrenIndex = index;
-      this.cid = this.classifyList[this.parentIndex].children[this.childrenIndex].id;
-      this.page = 0;
-      this.isRefreshing = true;
+      this.childrenIndex = index
+      this.cid = this.classifyList[this.parentIndex].children[this.childrenIndex].id
+      this.page = 0
+      this.isRefreshing = true
       this.getArticle()
     },
     getArticle() {
       getArticleByClassify(this.page, this.cid, 
         function success(data) {
-          var value = data.data;
-          this.hasMoreData = !value.over;
+          var value = data.data
+          this.hasMoreData = !value.over
           if(this.page > 0) {
-            this.articleList = this.articleList.concat(value.datas);
+            this.articleList = this.articleList.concat(value.datas)
           } else {
             this.isRefreshing = false;
-            this.articleList = value.datas;
+            this.articleList = value.datas
           }
         }.bind(this), 
         function fail(data, code) {
-          this.isRefreshing = false;
+          this.isRefreshing = false
         })
     },
     loadMoreData() {
       if(this.hasMoreData) {
-        this.page++;
-        this.getArticle();
+        this.page++
+        this.getArticle()
       }
     },
     openArticle(link, projectLink, title) {
-      var url = projectLink === '' ? link : projectLink;
+      var url = projectLink === '' ? link : projectLink
       if(url !== '') {
         router.push({
           uri: 'Webview',
@@ -123,9 +123,9 @@
       }
     },
     refresh(evt) {
-      this.isRefreshing = evt.refreshing;
-      this.page = 0;
-      this.getArticle();
+      this.isRefreshing = evt.refreshing
+      this.page = 0
+      this.getArticle()
     }
   }
 </script>

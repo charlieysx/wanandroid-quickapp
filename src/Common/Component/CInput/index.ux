@@ -1,0 +1,85 @@
+<template>
+  <div class="c-input">
+    <div class="c-input-content">
+      <text class="input-label" if="{{label}}"> {{label}} </text>
+      <input type="{{type}}" class="input-native" placeholder="{{placeholder}}" value="{{inputValue}}" onchange="onInput"/>
+      <div class="clear-box" if="{{clearable}}">
+        <div class="input-clear" if="{{clear}}" onclick="onClear">
+          <text>×</text>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+
+export default {
+  props: ['label', 'placeholder', 'type', 'value', 'clearable'],
+  propsDefault: {
+    placeholder: '请输入...',
+    type: 'text',
+    value: '',
+    clearable: false
+  },
+  data: () => ({
+    clear: false,
+    inputValue: ''
+  }),
+  onInit () {
+    this.inputValue = this.value
+  },
+  onInput ({ value }) {
+    this.clear = value !== ''
+    this.inputValue = value
+    this.$dispatch('input', { value: value })
+  },
+  onClear () {
+    this.clear = false
+    this.inputValue = ''
+    this.$dispatch('clear', { value: this.value })
+  }
+}
+</script>
+
+<style>
+.c-input-content {
+  display: flex;
+  width: 100%;
+  padding-left: 40px;
+  font-size: 30px;
+  padding-right: 20px;
+  height: 80px;
+  align-items: center;
+}
+
+.input-label {
+  width: 120px;
+}
+
+.input-native {
+  flex: 1;
+  font-size: 30px;
+}
+
+.clear-box {
+  height: 40px;
+  width: 40px;
+}
+
+.input-clear {
+  display: flex;
+  height: 40px;
+  width: 40px;
+  border-radius: 25px;
+  background-color: #dddddd;
+}
+
+.input-clear text {
+  width: 100%;
+  text-align: center;
+  font-size: 35px;
+  color: #ffffff;
+  margin-top: -5px;
+}
+</style>

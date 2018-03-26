@@ -1,0 +1,60 @@
+<template>
+  <div class="me-page">
+      <div if="isLogin">
+        
+      </div>
+      <login elif="{{ view === 'login' }}" ontoview="toView" onsuccess="loginSuccess"></login>
+      <register elif="{{ view === 'register' }}" ontoview="toView" onsuccess="registerSuccess"></register>
+  </div>
+</template>
+
+<import name="login" src="../Auth/login"></import>
+<import name="register" src="../Auth/register"></import>
+
+<script>
+var storage = require('@system.storage')
+
+export default {
+  data() {
+    return {
+      isLogin: false,
+      view: 'login'
+    }
+  },
+  onInit() {
+    storage.get({
+      key: 'isLogin',
+      success: function(data) {
+        this.isLogin = data === 'true' ? true : false
+      }.bind(this),
+      fail: function(data, code) {
+        this.isLogin = false
+      }.bind(this)
+    })
+  },
+  toView({ detail: { view } }) {
+    this.view = view
+  },
+  loginSuccess({ detail: { data } }) {
+    this.isLogin = true
+  },
+  registerSuccess({ detail: { data } }) {
+    this.isLogin = true
+  },
+  signout() {
+    this.isLogin = false
+    this.view = 'login'
+    storage.delete({
+      key: 'auth'
+    })
+    storage.set({
+      key: 'isLogin',
+      value: 'false'
+    })
+  }
+}
+</script>
+
+<style>
+
+</style>

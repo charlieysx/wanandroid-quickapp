@@ -4,10 +4,13 @@
         <tabs onchange="changeTabactive" index="{{currentIndex}}">
           <tab-content class="flexible-tab-content">
             <div class="tab-content-section">
-              <home></home>
+              <home if="{{tabItems[0].show}}"></home>
             </div>
             <div class="tab-content-section">
-              <classify></classify>
+              <classify if="{{tabItems[1].show}}"></classify>
+            </div>
+            <div class="tab-content-section">
+              <me if="{{tabItems[2].show}}"></me>
             </div>
           </tab-content>
         </tabs>
@@ -23,6 +26,7 @@
 
   <import name="home" src="../Home/index"></import>
   <import name="classify" src="../Classify/index"></import>
+  <import name="me" src="../Me/index"></import>
   
   <script>
     import router from '@system.router'
@@ -34,11 +38,18 @@
           tabItems: [
             {
               text: '首页',
-              icon: ['../Common/Image/icon_home.png', '../Common/Image/icon_home_select.png']
+              icon: ['../Common/Image/icon_home.png', '../Common/Image/icon_home_select.png'],
+              show: true
             },
             {
               text: '体系',
-              icon: ['../Common/Image/icon_classify.png', '../Common/Image/icon_classify_select.png']
+              icon: ['../Common/Image/icon_classify.png', '../Common/Image/icon_classify_select.png'],
+              show: false
+            },
+            {
+              text: '我',
+              icon: ['../Common/Image/icon_me.png', '../Common/Image/icon_me_select.png'],
+              show: false
             }
           ]
         }
@@ -51,6 +62,7 @@
       },
       changeCurrent(index) {
         this.$page.setTitleBar({ text: this.tabItems[index].text })
+        this.tabItems[index].show = true
         this.currentIndex = index
       }
     }

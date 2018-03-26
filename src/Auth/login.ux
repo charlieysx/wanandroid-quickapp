@@ -1,0 +1,88 @@
+<template>
+  <div class="login-page">
+      <text class="login-tip">请先登录</text>
+      <c-input label="用户名" clearable="true" placeholder="请输入用户名" class="input-border" oninput="onInputUsername"></c-input>
+      <c-input label="密码" clearable="true" placeholder="请输入密码" type="password" class="input-border" oninput="onInputPassword"></c-input>
+      <text class="login-btn" onclick="login">登录</text>
+      <text class="register-text" onclick="toRegister">没有账号？去注册一个</text>
+  </div>
+</template>
+  
+<import name="c-input" src="../Common/Component/CInput/index"></import>
+  
+<script>
+var prompt = require('@system.prompt')
+import {
+  login
+} from '../Common/Api/user'
+
+export default {
+  data() {
+    return {
+      username: '',
+      password: ''
+    }
+  },
+  toRegister() {
+    this.$dispatch('toview', { view: 'register' })
+  },
+  onInputUsername({ detail: { value } }) {
+    this.username = value
+  },
+  onInputPassword({ detail: { value } }) {
+    this.password = value
+  },
+  login() {
+    if(this.username === null || this.username.length < 6) {
+      prompt.showToast({ message: '用户名长度不能小于6' })
+    } else if (this.password === null || this.password.length < 6) {
+      prompt.showToast({ message: '密码长度不能小于6' })
+    } else {
+      login({
+        username: this.username,
+        password: this.password
+      }, function(data) {
+        this.$dispatch('success', { data: data })
+      }.bind(this), function(data, code) {
+        prompt.showToast({ message: data })
+      })
+    }
+  }
+}
+</script>
+  
+<style>
+.login-page {
+  display: flex;
+  flex-direction: column;
+}
+.login-tip {
+  width: 100%;
+  height: 100px;
+  text-align: center;
+  border-bottom-width: 1px;
+  border-bottom-color: #eeeeee;
+}
+.input-border {
+  border-bottom-width: 1px;
+  border-bottom-color: #eeeeee;
+}
+
+.login-btn {
+  height: 80px;
+  width: 100%;
+  text-align: center;
+  margin-top: 50px;
+  background-color: #24b9ff;
+  color: #ffffff;
+}
+
+.register-text {
+  width: 100%;
+  height: 50px;
+  margin-top: 20px;
+  font-size: 22px;
+  text-align: right;
+  padding: 10px;
+}
+</style>

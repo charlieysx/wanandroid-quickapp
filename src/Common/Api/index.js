@@ -1,19 +1,19 @@
-var fetch = require('@system.fetch');
-var storage = require('@system.storage');
+var fetch = require('@system.fetch')
+var storage = require('@system.storage')
 
-var API_ROOT = 'http://www.wanandroid.com/';
+var API_ROOT = 'http://www.wanandroid.com/'
 
-var headers = {};
+var headers = {}
 
 function getAuth(next) {
   storage.get({
     key: 'auth',
     success: function(data) {
-      headers.Cookie = data;
-      next(true);
+      headers.Cookie = data
+      next(true)
     },
     fail: function(data, code) {
-      next(false);
+      next(false)
     }
   })
 }
@@ -27,7 +27,7 @@ function realFetch(url, data = null, method = 'get', success = null, fail = null
     success: success,
     fail: function(data, code) {
       if(fail != null) {
-        fail(data, code);
+        fail(data, code)
       }
     }
   })
@@ -36,30 +36,33 @@ function realFetch(url, data = null, method = 'get', success = null, fail = null
 function withAuth(url, data = null, method = 'get', success = null, fail = null) {
   getAuth(function next(auth) {
     if(auth) {
-      realFetch(url, data, method, success, fail);
+      realFetch(url, data, method, success, fail)
     } else {
-      fail('请先登录！', -1);
+      fail('请先登录！', -1)
     }
   })
 }
 
 export default {
   getBanner(success, fail) {
-    realFetch('banner/json', null, 'get', success, fail);
+    realFetch('banner/json', null, 'get', success, fail)
   },
   getArticle(page, success, fail) {
-    realFetch('article/list/' + page + '/json', null, 'get', success, fail);
+    realFetch('article/list/' + page + '/json', null, 'get', success, fail)
   },
   getClassifyList(success, fail) {
-    realFetch('tree/json', null, 'get', success, fail);
+    realFetch('tree/json', null, 'get', success, fail)
   },
   getArticleByClassify(page, cid, success, fail) {
-    realFetch('article/list/' + page + '/json?cid=' + cid, null, 'get', success, fail);
+    realFetch('article/list/' + page + '/json?cid=' + cid, null, 'get', success, fail)
   },
   login(params, success, fail) {
-    realFetch('user/login', params, 'post', success, fail);
+    realFetch('user/login', params, 'post', success, fail)
+  },
+  register(params, success, fail) {
+    realFetch('user/register', params, 'post', success, fail)
   },
   getCollect(page, success, fail) {
-    withAuth('lg/collect/list/' + page + '/json', null, 'get', success, fail);
+    withAuth('lg/collect/list/' + page + '/json', null, 'get', success, fail)
   }
 }
