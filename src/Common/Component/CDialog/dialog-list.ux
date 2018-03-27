@@ -1,0 +1,80 @@
+<template>
+  <div>
+    <stack if="{{ visible }}" class="dialog">
+      <div class="backdrop" @click="onClick(-1)"></div>
+      <div class="dialog-container">
+        <text class="btn-item" for="(idx, btn) in btnList" @click="onClick(idx)" style="color: {{ btn.color ? btn.color : '#909399' }}">
+          {{btn.label}}
+        </text>
+      </div>
+    </stack>
+  </div>
+</template>
+
+<script>
+
+export default {
+  props: ['visible', 'btnList'],
+  propsDefault: {
+    visible: false,
+    btnList: [
+      {
+        label: 'OK',
+        color: '#909399'
+      }
+    ]
+  },
+  data: () => ({
+    dialogVisible: false
+  }),
+  onInit () {
+    this.$watch('visible', 'showdialog')
+  },
+  showdialog () {
+    if (this.visible) {
+      this.dialogVisible = true
+    } else {
+      this.onClose()
+    }
+  },
+  onClick (idx) {
+    this.onClose()
+    this.$dispatch('click', { idx })
+  },
+  onClose () {
+    this.$dispatch('close')
+  }
+}
+</script>
+
+<style>
+  .dialog {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dialog-container {
+    display: flex;
+    flex-direction: column;
+    width: 450px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    border: 1px solid #dcdfe6;
+  }
+
+  .btn-item {
+    text-align: center;
+    padding: 25px;
+    width: 100%;
+  }
+
+  .backdrop {
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+</style>

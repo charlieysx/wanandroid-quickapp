@@ -37,7 +37,6 @@
 <script>
   import {
     getCollectArticle,
-    collectArticle,
     uncollect
   } from '../Common/Api/collect'
 

@@ -1,0 +1,168 @@
+<template>
+  <div style="display: flex; flex-direction: column;">
+    <c-title show-back="true", title="收藏的网站", right-icon="/Common/Image/icon_add.png" oniconclick="onTitleIconClick"></c-title>
+    <text class="click-tip">长按可操作网站信息~</text>
+    <refresh @refresh="refresh" refreshing="{{isRefreshing}}">
+      <div class="flex">
+        <text for="webList" class="web-item" style="background-color: {{ $item.bg }}" onlongpress="dealWeb($item)">{{ $item.name }}</text>
+      </div>
+    </refresh>
+    <c-dialog-list visible="{{ showDialog }}" onclose="onClose" onclick="onClick" btn-list="{{ dialogBtn }}"></c-dialog-list>
+  </div>
+</template>
+
+<import name="c-title" src="../Common/Component/CTitle/index"></import>
+<import name="c-dialog-list" src="../Common/Component/CDialog/dialog-list"></import>
+
+<script>
+  import {
+    getCollectWeb,
+    deleteCollectWeb
+  } from '../Common/Api/collect'
+
+  export default {
+    data: {
+      webList: [],
+      isRefreshing: false,
+      colorList: [
+        '#24b9ff',
+        '#efabdd',
+        '#39e3f4',
+        '#eb5ec4',
+        '#33384a',
+        '#fcef43',
+        '#ff5f4e',
+        '#ef8426',
+        '#1a1818',
+        '#883835',
+        '#aad8eb',
+        '#9c6d1b'
+      ],
+      showDialog: false,
+      selectItem: {},
+      dialogBtn: [
+        {
+          label: '编辑'
+        }, 
+        {
+          label: '复制链接'
+        }, 
+        {
+          label: '取消收藏'
+        }, 
+        {
+          label: '关闭弹窗'
+        }
+      ]
+    },
+    onInit () {
+      this.refresh({refreshing: true})
+    },
+    onShow () {
+      if (this.$app.$data.dataAddWeb && this.$app.$data.dataAddWeb.gotoPage === 'collectWebList') {
+        var data = this.$app.$data.dataAddWeb.params;
+        if(data.success) {
+          this.refresh({refreshing: true})
+        }
+      }
+    },
+    getCollectWeb() {
+      getCollectWeb(function(data){
+          this.isRefreshing = false
+          var value = data.data;
+          for(var i = 0;i < value.length;++i) {
+            value[i].bg = this.getColor()
+          }
+          this.webList = value;
+        }.bind(this), 
+        function(data, code) {
+          this.isRefreshing = false
+        }.bind(this)
+      )
+    },
+    openArticle(link, title) {
+      if(link !== '') {
+        this.$app.$def.router.push({
+          uri: 'Webview',
+          params: { 
+            title: title,
+            url: link
+          }
+        })
+      }
+    },
+    refresh(evt) {
+      this.isRefreshing = evt.refreshing
+      this.page = 0
+      this.getCollectWeb()
+    },
+    deleteCollectWeb() {
+      deleteCollectWeb(this.selectItem.id, function(data) {
+        this.refresh({refreshing: true})
+        this.$app.$def.prompt.showToast({ message: '已取消收藏' })
+      }.bind(this), function(data, code) {
+        this.$app.$def.prompt.showToast({ message: '取消收藏失败' })
+      }.bind(this))
+    },
+    onTitleIconClick({ detail: { icon } }) {
+      if(icon === 'right') {
+        this.$app.$def.router.push({
+          uri: 'AddCollectWeb'
+        })
+      }
+    },
+    dealWeb(item) {
+      this.selectItem = item
+      this.showDialog = true
+    },
+    getColor() {
+      var index = Math.floor(Math.random() * this.colorList.length)
+      return this.colorList[index]
+    },
+    onClick ({ detail: { idx } }) {
+      this.showDialog = false
+      if(idx === 0) {
+        this.$app.$def.router.push({
+          uri: 'AddCollectWeb',
+          params: {
+            id: this.selectItem.id,
+            name: this.selectItem.name,
+            link: this.selectItem.link
+          }
+        })
+      } else if(idx === 1) {
+        this.$app.$def.clipboard.set({
+          text: this.selectItem.link,
+          success: function(data){
+          this.$app.$def.prompt.showToast({ message: '链接已复制到剪切板~' })
+        }.bind(this)})
+      } else if(idx === 2) {
+        this.deleteCollectWeb()
+      }
+      this.selectItem = {}
+    }
+  }
+</script>
+
+<style>
+  .flex {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    flex-direction: row;
+  }
+  .click-tip {
+    width: 100%;
+    text-align: center;
+    background-color: #eeeeee;
+    padding: 10px;
+  }
+  .web-item {
+    padding: 20px;
+    border-radius: 5px;
+    margin: 20px;
+    color: #ffffff;
+    height: 80px;
+    text-align: center;
+  }
+</style>

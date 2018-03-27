@@ -1,0 +1,96 @@
+<template>
+    <div class="add-article-page">
+        <c-input label="名称" clearable="true" placeholder="请输入网站名称" value="{{ name }}" class="input-border"  oninput="onInputName"></c-input>
+        <c-input label="链接" clearable="true" placeholder="请输入网站链接" value="{{ link }}" class="input-border" oninput="onInputLink"></c-input>
+        <text class="add-btn" onclick="add">{{ (id === '' || id === null) ? '添加收藏' : '确认修改' }}</text>
+    </div>
+  </template>
+    
+  <import name="c-input" src="../Common/Component/CInput/index"></import>
+    
+  <script>
+  import {
+    collectWeb,
+    editCollectWeb
+  } from '../Common/Api/collect'
+  
+  export default {
+    data() {
+      return {
+        id: '',
+        name: '',
+        link: ''
+      }
+    },
+    onInit() {
+      this.$page.setTitleBar({ text: (this.id === '' || this.id === null) ? '收藏网站' : '编辑网站' })
+    },
+    onInputName({ detail: { value } }) {
+      this.name = value
+    },
+    onInputLink({ detail: { value } }) {
+      this.link = value
+    },
+    add() {
+      if(this.name.length <= 0) {
+        this.$app.$def.prompt.showToast({ message: '网站名称不能为空' })
+      } else if (this.link.length <= 0) {
+        this.$app.$def.prompt.showToast({ message: '链接不能为空' })
+      } else {
+        if(this.id === '') {
+          this.addArticle()
+        } else {
+          this.editArticle()
+        }
+      }
+    },
+    addArticle() {
+      collectWeb(this.name, this.link, function(data) {
+        this.$app.$data.dataAddWeb = {
+          gotoPage: 'collectWebList',
+          params: {
+            success: true
+          }
+        }
+        this.$app.$def.prompt.showToast({ message: '收藏成功~' })
+        this.$app.$def.router.back()
+      }.bind(this), function(data, code) {
+        this.$app.$def.prompt.showToast({ message: data })
+      }.bind(this))
+    },
+    editArticle() {
+      editCollectWeb(this.id, this.name, this.link, function(data) {
+        this.$app.$data.dataAddWeb = {
+          gotoPage: 'collectWebList',
+          params: {
+            success: true
+          }
+        }
+        this.$app.$def.prompt.showToast({ message: '修改成功~' })
+        this.$app.$def.router.back()
+      }.bind(this), function(data, code) {
+        this.$app.$def.prompt.showToast({ message: data })
+      }.bind(this))
+    }
+  }
+  </script>
+    
+  <style>
+  .add-article-page {
+    display: flex;
+    flex-direction: column;
+  }
+  .input-border {
+    border-bottom-width: 1px;
+    border-bottom-color: #eeeeee;
+  }
+  
+  .add-btn {
+    height: 80px;
+    width: 100%;
+    text-align: center;
+    margin-top: 50px;
+    background-color: #24b9ff;
+    color: #ffffff;
+  }
+  </style>

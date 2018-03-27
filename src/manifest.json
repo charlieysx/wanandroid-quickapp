@@ -35,6 +35,12 @@
       },
       "AddCollectArticle": {
         "component": "index"
+      },
+      "CollectWebList": {
+        "component": "index"
+      },
+      "AddCollectWeb": {
+        "component": "index"
       }
     }
   },
@@ -49,6 +55,12 @@
       },
       "AddCollectArticle": {
         "titleBarText": "收藏站外文章"
+      },
+      "CollectWebList": {
+        "titleBar": false
+      },
+      "AddCollectWeb": {
+        "titleBarText": "收藏网站"
       }
     }
   }

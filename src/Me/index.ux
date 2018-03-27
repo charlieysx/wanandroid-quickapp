@@ -7,7 +7,7 @@
         </stack>
         <div class="item-title"></div>
         <text class="item border-bottom" onclick="openView('CollectArticleList')">收藏的文章</text>
-        <text class="item">收藏的网站</text>
+        <text class="item" onclick="openView('CollectWebList')">收藏的网站</text>
         <div class="item-title"></div>
         <text class="item border-bottom">关于</text>
         <div class="item-title"></div>
@@ -21,7 +21,7 @@
 
 <import name="login" src="../Auth/login"></import>
 <import name="register" src="../Auth/register"></import>
-<import name="c-dialog" src="../Common/Component/CDialog/index"></import>
+<import name="c-dialog" src="../Common/Component/CDialog/dialog"></import>
 
 <script>
 
@@ -129,8 +129,7 @@ export default {
   text-align: center;
   font-size: 56px;
   color: #ffffff;
-  background-color: #000000;
-  opacity: 0.7;
+  background-color: rgba(0, 0, 0, 0.7);
 }
 
 .header-email {

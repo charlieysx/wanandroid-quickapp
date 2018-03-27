@@ -70,6 +70,18 @@ export function collectWeb(name, link, success = null, fail = null) {
   }, fail)
 }
 
+export function editCollectWeb(id, name, link, success = null, fail = null) {
+  api.editCollectWeb({
+    id: id,
+    name: name,
+    link: link
+  }, function(data) {
+    if(success != null) {
+      success(JSON.parse(data.data))
+    }
+  }, fail)
+}
+
 export function deleteCollectWeb(id, success = null, fail = null) {
   api.deleteCollectWeb(id, function(data) {
     if(success != null) {
