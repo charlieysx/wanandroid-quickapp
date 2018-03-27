@@ -1,0 +1,77 @@
+<template>
+    <div class="add-article-page">
+        <c-input label="标题" clearable="true" placeholder="请输入标题" class="input-border"  oninput="onInputTitle"></c-input>
+        <c-input label="作者" clearable="true" placeholder="请输入作者名称" class="input-border" oninput="onInputAuthor"></c-input>
+        <c-input label="链接" clearable="true" placeholder="请输入文章链接" class="input-border" oninput="onInputLink"></c-input>
+        <text class="add-btn" onclick="add">添加收藏</text>
+    </div>
+  </template>
+    
+  <import name="c-input" src="../Common/Component/CInput/index"></import>
+    
+  <script>
+  import {
+    collectArticleAdd
+  } from '../Common/Api/collect'
+  
+  export default {
+    data() {
+      return {
+        title: '',
+        link: '',
+        author: ''
+      }
+    },
+    onInputTitle({ detail: { value } }) {
+      this.title = value
+    },
+    onInputAuthor({ detail: { value } }) {
+      this.author = value
+    },
+    onInputLink({ detail: { value } }) {
+      this.link = value
+    },
+    add() {
+      if(this.title.length <= 0) {
+        this.$app.$def.prompt.showToast({ message: '标题不能为空' })
+      } else if (this.author.length <= 0) {
+        this.$app.$def.prompt.showToast({ message: '作者名称不能为空' })
+      } else if (this.link.length <= 0) {
+        this.$app.$def.prompt.showToast({ message: '链接不能为空' })
+      } else {
+        collectArticleAdd(this.title, this.author, this.link, function(data) {
+          this.$app.$data.dataAddArticle = {
+            gotoPage: 'collectArticleList',
+            params: {
+              success: true
+            }
+          }
+          this.$app.$def.prompt.showToast({ message: '收藏成功~' })
+          this.$app.$def.router.back()
+        }.bind(this), function(data, code) {
+          this.$app.$def.prompt.showToast({ message: data })
+        }.bind(this))
+      }
+    }
+  }
+  </script>
+    
+  <style>
+  .add-article-page {
+    display: flex;
+    flex-direction: column;
+  }
+  .input-border {
+    border-bottom-width: 1px;
+    border-bottom-color: #eeeeee;
+  }
+  
+  .add-btn {
+    height: 80px;
+    width: 100%;
+    text-align: center;
+    margin-top: 50px;
+    background-color: #24b9ff;
+    color: #ffffff;
+  }
+  </style>

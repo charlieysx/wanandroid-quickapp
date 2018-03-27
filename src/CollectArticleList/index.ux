@@ -1,12 +1,12 @@
 <template>
   <div style="display: flex; flex-direction: column;">
     <c-title show-back="true", title="收藏的文章", right-icon="/Common/Image/icon_add.png" oniconclick="onTitleIconClick"></c-title>
-    <text class="click-tip">长按可复制文章链接~</text>
+    <text class="click-tip">长按可分享文章~</text>
     <refresh @refresh="refresh" refreshing="{{isRefreshing}}">
     <list class="home-page" onscrollbottom="loadMoreData">
         <!-- 文章 -->
         <block for="articleList">
-          <list-item type="article" class="article-item" onclick="openArticle($item.link, $item.title)" onlongpress="copyLink($item.link)">
+          <list-item type="article" class="article-item" onclick="openArticle($item.link, $item.title)" onlongpress="shareLink($item.link)">
             <div style="display: flex">
               <text class="text-title" style="flex: 1">{{$item.title}}</text>
               <image style="width: 52px;height: 52px;" src="../Common/Image/icon_collect.png" onclick="uncollect($item.id, $item.originId)"></image>
@@ -51,6 +51,14 @@
     onInit () {
       this.refresh({refreshing: true})
     },
+    onShow () {
+      if (this.$app.$data.dataAddArticle && this.$app.$data.dataAddArticle.gotoPage === 'collectArticleList') {
+        var data = this.$app.$data.dataAddArticle.params;
+        if(data.success) {
+          this.refresh({refreshing: true})
+        }
+      }
+    },
     getCollectArticle() {
       getCollectArticle(this.page, function(data){
           var value = data.data;
@@ -74,7 +82,6 @@
       }
     },
     openArticle(link, title) {
-      console.log(link)
       if(link !== '') {
         this.$app.$def.router.push({
           uri: 'Webview',
@@ -100,18 +107,15 @@
     },
     onTitleIconClick({ detail: { icon } }) {
       if(icon === 'right') {
-
+        this.$app.$def.router.push({
+          uri: 'AddCollectArticle'
+        })
       }
     },
-    copyLink(url) {
-      this.$app.$def.clipboard.set({
-        text: url,
-        success: function(data) {
-          this.$app.$def.prompt.showToast({ message: '链接已复制到剪切板~' })
-        }.bind(this),
-        fail: function(data, code) {
-          this.$app.$def.prompt.showToast({ message: '链接复制失败!!!' })
-        }.bind(this)
+    shareLink(url) {
+      this.$app.$def.share.share({
+        type:"text/plain",
+        data: url
       })
     }
   }

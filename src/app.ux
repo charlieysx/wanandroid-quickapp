@@ -7,12 +7,14 @@
   import prompt from '@system.prompt'
   import router from '@system.router'
   import storage from '@system.storage'
+  import share from '@system.share'
 
   export default {
     clipboard: clipboard,
     prompt: prompt,
     router: router,
     storage: storage,
+    share: share,
     createShortcut: util.createShortcut
   }
 </script>

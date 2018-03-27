@@ -24,7 +24,7 @@
         <list class="article-list" onscrollbottom="loadMoreData">
             <!-- 文章 -->
             <block for="articleList">
-              <list-item type="article" class="article-item" onclick="openArticle($item.link, $item.projectLink, $item.title)">
+              <list-item type="article" class="article-item" onclick="openArticle($item.link, $item.projectLink, $item.title)" onlongpress="shareLink($item.link)">
                 <div style="display: flex">
                   <text class="tag" show="{{$item.fresh}}">新</text>
                   <text class="text-title" style="flex: 1">{{$item.title}}</text>
@@ -157,6 +157,12 @@
       }.bind(this), function(data, code) {
         this.$app.$def.prompt.showToast({ message: '收藏失败，登录之后才可收藏~' })
       }.bind(this))
+    },
+    shareLink(url) {
+      this.$app.$def.share.share({
+        type:"text/plain",
+        data: url
+      })
     }
   }
 </script>

@@ -12,7 +12,8 @@
     { "name": "system.fetch" },
     { "name": "system.webview" },
     { "name": "system.storage" },
-    { "name": "system.clipboard" }
+    { "name": "system.clipboard" },
+    { "name": "system.share" }
   ],
   "permissions": [
     { "origin": "*" }
@@ -31,6 +32,9 @@
       },
       "CollectArticleList": {
         "component": "index"
+      },
+      "AddCollectArticle": {
+        "component": "index"
       }
     }
   },
@@ -42,6 +46,9 @@
     "pages": {
       "CollectArticleList": {
         "titleBar": false
+      },
+      "AddCollectArticle": {
+        "titleBarText": "收藏站外文章"
       }
     }
   }
