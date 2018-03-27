@@ -11,7 +11,6 @@
 <import name="c-input" src="../Common/Component/CInput/index"></import>
   
 <script>
-var prompt = require('@system.prompt')
 import {
   login
 } from '../Common/Api/user'
@@ -34,15 +33,15 @@ export default {
   },
   login() {
     if(this.username === null || this.username.length < 6) {
-      prompt.showToast({ message: '用户名长度不能小于6' })
+      this.$app.$def.prompt.showToast({ message: '用户名长度不能小于6' })
     } else if (this.password === null || this.password.length < 6) {
-      prompt.showToast({ message: '密码长度不能小于6' })
+      this.$app.$def.prompt.showToast({ message: '密码长度不能小于6' })
     } else {
       login(this.username,this.password, function(data) {
         this.$dispatch('success', { data: data })
       }.bind(this), function(data, code) {
-        prompt.showToast({ message: data })
-      })
+        this.$app.$def.prompt.showToast({ message: data })
+      }.bind(this))
     }
   }
 }

@@ -29,7 +29,6 @@
   <import name="me" src="../Me/index"></import>
   
   <script>
-    import router from '@system.router'
   
     export default {
       data() {

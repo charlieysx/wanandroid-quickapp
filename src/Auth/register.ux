@@ -12,7 +12,6 @@
 <import name="c-input" src="../Common/Component/CInput/index"></import>
   
 <script>
-var prompt = require('@system.prompt')
 import {
   register
 } from '../Common/Api/user'
@@ -39,11 +38,11 @@ export default {
   },
   register() {
     if(this.username === null || this.username.length < 6) {
-      prompt.showToast({ message: '用户名长度不能小于6' })
+      this.$app.$def.prompt.showToast({ message: '用户名长度不能小于6' })
     } else if (this.password === null || this.password.length < 6) {
-      prompt.showToast({ message: '密码长度不能小于6' })
+      this.$app.$def.prompt.showToast({ message: '密码长度不能小于6' })
     } else if (this.password !== this.repassword) {
-      prompt.showToast({ message: '两次密码不一样' })
+      this.$app.$def.prompt.showToast({ message: '两次密码不一样' })
     } else {
       register({
         username: this.username,
@@ -52,8 +51,8 @@ export default {
       }, function(data) {
         this.$dispatch('success', { data: data })
       }.bind(this), function(data, code) {
-        prompt.showToast({ message: data })
-      })
+        this.$app.$def.prompt.showToast({ message: data })
+      }.bind(this))
     }
   }
 }

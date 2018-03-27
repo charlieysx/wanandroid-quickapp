@@ -11,7 +11,14 @@ export function getCollectArticle(page, success = null, fail = null) {
 export function collectArticle(id, success = null, fail = null) {
   api.collectArticle(id, function(data) {
     if(success != null) {
-      success(JSON.parse(data.data))
+      var value = JSON.parse(data.data)
+      if(value.errorCode === -1) {
+        if(fail !== null) {
+          fail('请先登录', -1)
+        }
+      } else {
+        success(JSON.parse(data.data))
+      }
     }
   }, fail)
 }

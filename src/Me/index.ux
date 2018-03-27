@@ -6,7 +6,7 @@
           <text class="username">{{ loginData.username }}</text>
         </stack>
         <div class="item-title"></div>
-        <text class="item border-bottom">收藏的文章</text>
+        <text class="item border-bottom" onclick="openView('CollectArticleList')">收藏的文章</text>
         <text class="item">收藏的网站</text>
         <div class="item-title"></div>
         <text class="item border-bottom">关于</text>
@@ -24,7 +24,6 @@
 <import name="c-dialog" src="../Common/Component/CDialog/index"></import>
 
 <script>
-var storage = require('@system.storage')
 
 export default {
   data() {
@@ -44,7 +43,7 @@ export default {
     }
   },
   onInit() {
-    storage.get({
+    this.$app.$def.storage.get({
       key: 'user',
       success: function(data) {
         this.loginData = {}
@@ -56,7 +55,7 @@ export default {
         this.loginData = {}
       }.bind(this)
     })
-    storage.get({
+    this.$app.$def.storage.get({
       key: 'isLogin',
       success: function(data) {
         this.isLogin = data === 'true' ? true : false
@@ -80,13 +79,13 @@ export default {
   signout() {
     this.isLogin = false
     this.view = 'login'
-    storage.delete({
+    this.$app.$def.storage.delete({
       key: 'auth'
     })
-    storage.delete({
+    this.$app.$def.storage.delete({
       key: 'user'
     })
-    storage.set({
+    this.$app.$def.storage.set({
       key: 'isLogin',
       value: 'false'
     })
@@ -101,6 +100,9 @@ export default {
     if(idx === 0) {
       this.signout()
     }
+  },
+  openView(uri) {
+    this.$app.$def.router.push({ uri: uri })
   }
 }
 </script>

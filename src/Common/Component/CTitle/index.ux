@@ -1,0 +1,49 @@
+<template>
+  <div class="c-title">
+    <image class="icon" if="showBack" src="/Common/Image/icon_back.png" onclick="onBackClick"></image>
+    <text class="title">{{ title }}</text>
+    <image class="icon" if="{{ rightIcon !== '' }}" src="{{ rightIcon }}" onclick="onRightIconClick"></image>
+  </div>
+</template>
+
+<script>
+
+export default {
+  props: ['showBack', 'title', 'rightIcon'],
+  propsDefault: {
+    showBack: true,
+    title: '',
+    rightIcon: ''
+  },
+  onBackClick() {
+    this.$dispatch('iconclick', { icon: 'back' })
+    this.$app.$def.router.back()
+  },
+  onRightIconClick() {
+    this.$dispatch('iconclick', { icon: 'right' })
+  }
+}
+</script>
+
+<style>
+.c-title {
+  display: flex;
+  height: 100px;
+  align-items: center;
+  background-color: #24b9ff;
+}
+.title {
+  text-overflow: ellipsis;
+  lines: 1;
+  flex: 1;
+  font-size: 36px;
+  color: #ffffff;
+  margin-left: 20px;
+}
+
+.icon {
+  width: 100px;
+  height: 100px;
+  padding: 26px;
+}
+</style>

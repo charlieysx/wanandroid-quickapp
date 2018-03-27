@@ -3,8 +3,16 @@
    * 应用级别的配置，供所有页面公用
    */
   import util from './util'
+  import clipboard from '@system.clipboard'
+  import prompt from '@system.prompt'
+  import router from '@system.router'
+  import storage from '@system.storage'
 
   export default {
+    clipboard: clipboard,
+    prompt: prompt,
+    router: router,
+    storage: storage,
     createShortcut: util.createShortcut
   }
 </script>

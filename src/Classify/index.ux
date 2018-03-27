@@ -52,8 +52,6 @@
 </template>
 
 <script>
-  import router from '@system.router'
-  var prompt = require('@system.prompt')
   import {
     getClassifyList,
     getArticleByClassify
@@ -123,7 +121,7 @@
     openArticle(link, projectLink, title) {
       var url = projectLink === '' ? link : projectLink
       if(url !== '') {
-        router.push({
+        this.$app.$def.router.push({
           uri: 'Webview',
           params: { 
             title: title,
@@ -147,18 +145,18 @@
     uncollect(id) {
       uncollectArticle(id, function(data) {
         this.refresh({refreshing: true})
-        prompt.showToast({ message: '已取消收藏' })
+        this.$app.$def.prompt.showToast({ message: '已取消收藏' })
       }.bind(this), function(data, code) {
-        prompt.showToast({ message: '取消收藏失败' })
-      })
+        this.$app.$def.prompt.showToast({ message: '取消收藏失败' })
+      }.bind(this))
     },
     collect(id) {
       collectArticle(id, function(data) {
         this.refresh({refreshing: true})
-        prompt.showToast({ message: '收藏成功~' })
+        this.$app.$def.prompt.showToast({ message: '收藏成功~' })
       }.bind(this), function(data, code) {
-        prompt.showToast({ message: '收藏失败' })
-      })
+        this.$app.$def.prompt.showToast({ message: '收藏失败，登录之后才可收藏~' })
+      }.bind(this))
     }
   }
 </script>
