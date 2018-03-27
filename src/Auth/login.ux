@@ -38,10 +38,7 @@ export default {
     } else if (this.password === null || this.password.length < 6) {
       prompt.showToast({ message: '密码长度不能小于6' })
     } else {
-      login({
-        username: this.username,
-        password: this.password
-      }, function(data) {
+      login(this.username,this.password, function(data) {
         this.$dispatch('success', { data: data })
       }.bind(this), function(data, code) {
         prompt.showToast({ message: data })

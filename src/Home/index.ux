@@ -17,9 +17,10 @@
         <!-- 文章 -->
         <block for="articleList">
           <list-item type="article" class="article-item" onclick="openArticle($item.link, $item.projectLink, $item.title)">
-            <div>
+            <div style="display: flex">
               <text class="tag" show="{{$item.fresh}}">新</text>
-              <text class="text-title">{{$item.title}}</text>
+              <text class="text-title" style="flex: 1">{{$item.title}}</text>
+              <image style="width: 52px;height: 52px;" src="{{ collectIcon[$item.collect ? 1 : 0]}}" onclick="clickCollect($item)"></image>
             </div>
             <div class="article-tip">
                 <text class="tip">分类: {{$item.superChapterName}}/{{$item.chapterName}}</text>
@@ -43,10 +44,15 @@
 
 <script>
   import router from '@system.router'
+  var prompt = require('@system.prompt')
   import {
     getBanner,
     getArticle
   } from '../Common/Api/home'
+  import {
+    collectArticle,
+    uncollectArticle
+  } from '../Common/Api/collect'
 
   export default {
     data: {
@@ -54,7 +60,11 @@
       articleList: [],
       page: 0,
       hasMoreData: true,
-      isRefreshing: false
+      isRefreshing: false,
+      collectIcon: [
+        '../Common/Image/icon_uncollect.png',
+        '../Common/Image/icon_collect.png'
+      ]
     },
     onInit () {
       this.refresh({refreshing: true})
@@ -103,6 +113,29 @@
       this.page = 0
       this.getBanner()
       this.getArticle()
+    },
+    clickCollect(item) {
+      if(item.collect) {
+        this.uncollect(item.id)
+      } else {
+        this.collect(item.id)
+      }
+    },
+    uncollect(id) {
+      uncollectArticle(id, function(data) {
+        this.refresh({refreshing: true})
+        prompt.showToast({ message: '已取消收藏' })
+      }.bind(this), function(data, code) {
+        prompt.showToast({ message: '取消收藏失败' })
+      })
+    },
+    collect(id) {
+      collectArticle(id, function(data) {
+        this.refresh({refreshing: true})
+        prompt.showToast({ message: '收藏成功~' })
+      }.bind(this), function(data, code) {
+        prompt.showToast({ message: '收藏失败' })
+      })
     }
   }
 </script>

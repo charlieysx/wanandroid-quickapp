@@ -1,8 +1,11 @@
 import api from './index'
 var storage = require('@system.storage')
 
-export function login(params, success = null, fail = null) {
-  api.login(params, function(data) {
+export function login(username, password, success = null, fail = null) {
+  api.login({
+    username: username,
+    password: password
+  }, function(data) {
     var value = JSON.parse(data.data)
     if(value.errorCode < 0) {
       if(fail !== null) {
@@ -35,8 +38,12 @@ export function login(params, success = null, fail = null) {
   })
 }
 
-export function register(params, success = null, fail = null) {
-  api.register(params, function(data) {
+export function register(username, password, repassword, success = null, fail = null) {
+  api.register({
+    username: username,
+    password: password,
+    repassword: repassword
+  }, function(data) {
     var value = JSON.parse(data.data)
     if(value.errorCode < 0) {
       if(fail !== null) {
@@ -67,12 +74,4 @@ export function register(params, success = null, fail = null) {
       fail('注册失败', -1)
     }
   })
-}
-
-export function getCollect(page, success = null, fail = null) {
-  api.getCollect(page, function(data) {
-    if(success != null) {
-      success(JSON.parse(data.data))
-    }
-  }, fail)
 }
