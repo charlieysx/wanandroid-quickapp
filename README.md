@@ -4,16 +4,16 @@
 
 #### wanandroid快应用截图
 
-![Alt text](/img/21.jpeg)
-![Alt text](/img/22.jpeg)
-![Alt text](/img/23.jpeg)
+![Alt text](/img/21.jpg)
+![Alt text](/img/22.jpg)
+![Alt text](/img/23.jpg)
 ![Alt text](/img/4.jpeg)
-![Alt text](/img/24.jpeg)
-![Alt text](/img/25.jpeg)
-![Alt text](/img/26.jpeg)
-![Alt text](/img/27.jpeg)
-![Alt text](/img/28.jpeg)
-![Alt text](/img/29.jpeg)
+![Alt text](/img/24.jpg)
+![Alt text](/img/25.jpg)
+![Alt text](/img/26.jpg)
+![Alt text](/img/27.jpg)
+![Alt text](/img/28.jpg)
+![Alt text](/img/29.jpg)
 
 #### 说明
 根据[wanandroid](http://www.wanandroid.com/blog/show/2)网站提供的api开发的快应用
