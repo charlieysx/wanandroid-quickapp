@@ -19,13 +19,17 @@ function getAuth(next) {
 }
 
 function realFetch(url, data = null, method = 'get', success = null, fail = null) {
+  console.log('┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
+  console.log('┃ url: ', API_ROOT + url)
+  console.log('┃ method: ', method)
+  console.log('┃ data: ', JSON.stringify(data))
+  console.log('┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
   fetch.fetch({
     url: API_ROOT + url,
     data: data,
     header: headers,
     method: method,
     success: function(data) {
-      console.log(data.data)
       if(success != null) {
         success(data)
       }

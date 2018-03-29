@@ -44,11 +44,7 @@ export default {
     } else if (this.password !== this.repassword) {
       this.$app.$def.prompt.showToast({ message: '两次密码不一样' })
     } else {
-      register({
-        username: this.username,
-        password: this.password,
-        repassword: this.repassword
-      }, function(data) {
+      register(this.username, this.password, this.repassword, function(data) {
         this.$dispatch('success', { data: data })
       }.bind(this), function(data, code) {
         this.$app.$def.prompt.showToast({ message: data })
