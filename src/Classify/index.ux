@@ -80,10 +80,11 @@
       this.getClassifyList()
     },
     getClassifyList() {
-      getClassifyList(function success(data) {
-        this.classifyList = data.data;
-        this.clickParent(0)
-      }.bind(this))
+      getClassifyList()
+        .then((data) => {
+          this.classifyList = data;
+          this.clickParent(0)
+        })
     },
     clickParent(index) {
       this.parentIndex = index;
@@ -97,18 +98,17 @@
       this.getArticle()
     },
     getArticle() {
-      getArticleByClassify(this.page, this.cid, 
-        function success(data) {
-          var value = data.data
-          this.hasMoreData = !value.over
+      getArticleByClassify(this.page, this.cid)
+        .then((data) => {
+          this.hasMoreData = !data.over
           if(this.page > 0) {
-            this.articleList = this.articleList.concat(value.datas)
+            this.articleList = this.articleList.concat(data.datas)
           } else {
             this.isRefreshing = false;
-            this.articleList = value.datas
+            this.articleList = data.datas
           }
-        }.bind(this), 
-        function fail(data, code) {
+        })
+        .catch((err) => {
           this.isRefreshing = false
         })
     },
@@ -143,20 +143,24 @@
       }
     },
     uncollect(id) {
-      uncollectArticle(id, function(data) {
-        this.refresh({refreshing: true})
-        this.$app.$def.prompt.showToast({ message: '已取消收藏' })
-      }.bind(this), function(data, code) {
-        this.$app.$def.prompt.showToast({ message: '取消收藏失败' })
-      }.bind(this))
+      uncollectArticle(id)
+        .then((data) => {
+          this.refresh({refreshing: true})
+          this.$app.$def.prompt.showToast({ message: '已取消收藏' })
+        })
+        .catch((err) => {
+          this.$app.$def.prompt.showToast({ message: '取消收藏失败' })
+        })
     },
     collect(id) {
-      collectArticle(id, function(data) {
-        this.refresh({refreshing: true})
-        this.$app.$def.prompt.showToast({ message: '收藏成功~' })
-      }.bind(this), function(data, code) {
-        this.$app.$def.prompt.showToast({ message: '收藏失败，登录之后才可收藏~' })
-      }.bind(this))
+      collectArticle(id)
+        .then((data) => {
+          this.refresh({refreshing: true})
+          this.$app.$def.prompt.showToast({ message: '收藏成功~' })
+        })
+        .catch((err) => {
+          this.$app.$def.prompt.showToast({ message: '收藏失败，登录之后才可收藏~' })
+        })
     },
     shareLink(url) {
       this.$app.$def.share.share({

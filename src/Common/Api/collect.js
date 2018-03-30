@@ -1,91 +1,98 @@
 import api from './index'
 
-export function getCollectArticle(page, success = null, fail = null) {
-  api.getCollectArticle(page, function(data) {
-    if(success != null) {
-      success(JSON.parse(data.data))
-    }
-  }, fail)
+export function getCollectArticle(page) {
+  return api.getCollectArticle(page)
+    .then((response) => {
+      return Promise.resolve(JSON.parse(response.data).data)
+    }).catch((err) => {
+      return Promise.reject(err)
+    })
 }
 
-export function collectArticle(id, success = null, fail = null) {
-  api.collectArticle(id, function(data) {
-    if(success != null) {
-      var value = JSON.parse(data.data)
+export function collectArticle(id) {
+  return api.collectArticle(id)
+    .then((response) => {
+      var value = JSON.parse(response.data)
       if(value.errorCode === -1) {
-        if(fail !== null) {
-          fail('请先登录', -1)
-        }
+        return Promise.reject('请先登录')
       } else {
-        success(JSON.parse(data.data))
+        return Promise.resolve(value.data)
       }
-    }
-  }, fail)
+    }).catch((err) => {
+      return Promise.reject(err)
+    })
 }
 
-export function collectArticleAdd(title, author, link, success = null, fail = null) {
-  api.collectArticleAdd({
+export function collectArticleAdd(title, author, link) {
+  return api.collectArticleAdd({
     title: title,
     author: author,
     link: link
-  }, function(data) {
-    if(success != null) {
-      success(JSON.parse(data.data))
-    }
-  }, fail)
+  })
+    .then((response) => {
+      return Promise.resolve(JSON.parse(response.data).data)
+    }).catch((err) => {
+      return Promise.reject(err)
+    })
 }
 
-export function uncollectArticle(id, success = null, fail = null) {
-  api.uncollectArticle(id, function(data) {
-    if(success != null) {
-      success(JSON.parse(data.data))
-    }
-  }, fail)
+export function uncollectArticle(id) {
+  return api.uncollectArticle(id)
+    .then((response) => {
+      return Promise.resolve(JSON.parse(response.data).data)
+    }).catch((err) => {
+      return Promise.reject(err)
+    })
 }
 
-export function uncollect(id, originId, success = null, fail = null) {
-  api.uncollect(id, originId, function(data) {
-    if(success != null) {
-      success(JSON.parse(data.data))
-    }
-  }, fail)
+export function uncollect(id, originId) {
+  return api.uncollect(id, originId)
+    .then((response) => {
+      return Promise.resolve(JSON.parse(response.data).data)
+    }).catch((err) => {
+      return Promise.reject(err)
+    })
 }
 
-export function getCollectWeb(success = null, fail = null) {
-  api.getCollectWeb(function(data) {
-    if(success != null) {
-      success(JSON.parse(data.data))
-    }
-  }, fail)
+export function getCollectWeb() {
+  return api.getCollectWeb()
+    .then((response) => {
+      return Promise.resolve(JSON.parse(response.data).data)
+    }).catch((err) => {
+      return Promise.reject(err)
+    })
 }
 
-export function collectWeb(name, link, success = null, fail = null) {
-  api.collectWeb({
+export function collectWeb(name, link) {
+  return api.collectWeb({
     name: name,
     link: link
-  }, function(data) {
-    if(success != null) {
-      success(JSON.parse(data.data))
-    }
-  }, fail)
+  })
+    .then((response) => {
+      return Promise.resolve(JSON.parse(response.data).data)
+    }).catch((err) => {
+      return Promise.reject(err)
+    })
 }
 
-export function editCollectWeb(id, name, link, success = null, fail = null) {
-  api.editCollectWeb({
+export function editCollectWeb(id, name, link) {
+  return api.editCollectWeb({
     id: id,
     name: name,
     link: link
-  }, function(data) {
-    if(success != null) {
-      success(JSON.parse(data.data))
-    }
-  }, fail)
+  })
+    .then((response) => {
+      return Promise.resolve(JSON.parse(response.data).data)
+    }).catch((err) => {
+      return Promise.reject(err)
+    })
 }
 
-export function deleteCollectWeb(id, success = null, fail = null) {
-  api.deleteCollectWeb(id, function(data) {
-    if(success != null) {
-      success(JSON.parse(data.data))
-    }
-  }, fail)
+export function deleteCollectWeb(id) {
+  return api.deleteCollectWeb(id)
+    .then((response) => {
+      return Promise.resolve(JSON.parse(response.data).data)
+    }).catch((err) => {
+      return Promise.reject(err)
+    })
 }

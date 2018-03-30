@@ -59,25 +59,24 @@
       }
     },
     getCollectArticle() {
-      getCollectArticle(this.page, function(data){
-          var value = data.data;
-          this.hasMoreData = !value.over
+      getCollectArticle(this.page)
+        .then((data) => {
+          this.hasMoreData = !data.over
           if(this.page > 0) {
-            this.articleList = this.articleList.concat(value.datas)
+            this.articleList = this.articleList.concat(data.datas)
           } else {
             this.isRefreshing = false
-            this.articleList = value.datas
+            this.articleList = data.datas
           }
-        }.bind(this), 
-        function(data, code) {
+        })
+        .catch((err) => {
           this.isRefreshing = false
-        }.bind(this)
-      )
+        })
     },
     loadMoreData() {
       if(this.hasMoreData) {
         this.page++
-        this.getArticle()
+        this.getCollectArticle()
       }
     },
     openArticle(link, title) {
@@ -97,12 +96,14 @@
       this.getCollectArticle()
     },
     uncollect(id, originId) {
-      uncollect(id, originId, function(data) {
-        this.refresh({refreshing: true})
-        this.$app.$def.prompt.showToast({ message: '已取消收藏' })
-      }.bind(this), function(data, code) {
-        this.$app.$def.prompt.showToast({ message: '取消收藏失败' })
-      }.bind(this))
+      uncollect(id, originId)
+        .then((data) => {
+          this.refresh({refreshing: true})
+          this.$app.$def.prompt.showToast({ message: '已取消收藏' })
+        })
+        .catch((err) => {
+          this.$app.$def.prompt.showToast({ message: '取消收藏失败' })
+        })
     },
     onTitleIconClick({ detail: { icon } }) {
       if(icon === 'right') {

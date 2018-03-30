@@ -1,17 +1,19 @@
 import api from './index'
 
-export function getBanner(success = null, fail = null) {
-  api.getBanner(function(data) {
-    if(success != null) {
-      success(JSON.parse(data.data))
-    }
-  }, fail)
+export function getBanner() {
+  return api.getBanner()
+    .then((response) => {
+      return Promise.resolve(JSON.parse(response.data).data)
+    }).catch((err) => {
+      return Promise.reject(err)
+    })
 }
 
-export function getArticle(page = 0, success = null, fail = null) {
-  api.getArticle(page, function(data) {
-    if(success != null) {
-      success(JSON.parse(data.data))
-    }
-  }, fail)
+export function getArticle(page = 0) {
+  return api.getArticle(page)
+    .then((response) => {
+      return Promise.resolve(JSON.parse(response.data).data)
+    }).catch((err) => {
+      return Promise.reject(err)
+    })
 }

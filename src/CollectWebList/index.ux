@@ -7,7 +7,7 @@
         <text for="webList" class="web-item" style="background-color: {{ $item.bg }}" onlongpress="dealWeb($item)">{{ $item.name }}</text>
       </div>
     </refresh>
-    <c-dialog-list visible="{{ showDialog }}" onclose="onClose" onclick="onClick" btn-list="{{ dialogBtn }}"></c-dialog-list>
+    <c-dialog-list visible="{{ showDialog }}" onclick="onClick" btn-list="{{ dialogBtn }}"></c-dialog-list>
   </div>
 </template>
 
@@ -67,18 +67,17 @@
       }
     },
     getCollectWeb() {
-      getCollectWeb(function(data){
+      getCollectWeb()
+        .then((data) => {
           this.isRefreshing = false
-          var value = data.data;
-          for(var i = 0;i < value.length;++i) {
-            value[i].bg = this.getColor()
+          for(var i = 0;i < data.length;++i) {
+            data[i].bg = this.getColor()
           }
-          this.webList = value;
-        }.bind(this), 
-        function(data, code) {
+          this.webList = data;
+        })
+        .catch((err) => {
           this.isRefreshing = false
-        }.bind(this)
-      )
+        })
     },
     openArticle(link, title) {
       if(link !== '') {
@@ -97,12 +96,14 @@
       this.getCollectWeb()
     },
     deleteCollectWeb() {
-      deleteCollectWeb(this.selectItem.id, function(data) {
-        this.refresh({refreshing: true})
-        this.$app.$def.prompt.showToast({ message: '已取消收藏' })
-      }.bind(this), function(data, code) {
-        this.$app.$def.prompt.showToast({ message: '取消收藏失败' })
-      }.bind(this))
+      deleteCollectWeb(this.selectItem.id)
+        .then((data) => {
+          this.refresh({refreshing: true})
+          this.$app.$def.prompt.showToast({ message: '已取消收藏' })
+        })
+        .catch((err) => {
+          this.$app.$def.prompt.showToast({ message: '取消收藏失败' })
+        })
     },
     onTitleIconClick({ detail: { icon } }) {
       if(icon === 'right') {
@@ -134,8 +135,8 @@
         this.$app.$def.clipboard.set({
           text: this.selectItem.link,
           success: function(data){
-          this.$app.$def.prompt.showToast({ message: '链接已复制到剪切板~' })
-        }.bind(this)})
+            this.$app.$def.prompt.showToast({ message: '链接已复制到剪切板~' })
+          }.bind(this)})
       } else if(idx === 2) {
         this.deleteCollectWeb()
       }

@@ -1,17 +1,19 @@
 import api from './index'
 
-export function getClassifyList(success = null, fail = null) {
-  api.getClassifyList(function(data) {
-    if(success != null) {
-      success(JSON.parse(data.data))
-    }
-  }, fail)
+export function getClassifyList() {
+  return api.getClassifyList()
+    .then((response) => {
+      return Promise.resolve(JSON.parse(response.data).data)
+    }).catch((err) => {
+      return Promise.reject(err)
+    })
 }
 
-export function getArticleByClassify(page = 0, cid,success = null, fail = null) {
-  api.getArticleByClassify(page, cid, function(data) {
-    if(success != null) {
-      success(JSON.parse(data.data))
-    }
-  }, fail)
+export function getArticleByClassify(page = 0, cid) {
+  return api.getArticleByClassify(page, cid)
+    .then((response) => {
+      return Promise.resolve(JSON.parse(response.data).data)
+    }).catch((err) => {
+      return Promise.reject(err)
+    })
 }

@@ -45,32 +45,36 @@
       }
     },
     addArticle() {
-      collectWeb(this.name, this.link, function(data) {
-        this.$app.$data.dataAddWeb = {
-          gotoPage: 'collectWebList',
-          params: {
-            success: true
+      collectWeb(this.name, this.link)
+        .then((data) => {
+          this.$app.$data.dataAddWeb = {
+            gotoPage: 'collectWebList',
+            params: {
+              success: true
+            }
           }
-        }
-        this.$app.$def.prompt.showToast({ message: '收藏成功~' })
-        this.$app.$def.router.back()
-      }.bind(this), function(data, code) {
-        this.$app.$def.prompt.showToast({ message: data })
-      }.bind(this))
+          this.$app.$def.prompt.showToast({ message: '收藏成功~' })
+          this.$app.$def.router.back()
+        })
+        .catch((err) => {
+          this.$app.$def.prompt.showToast({ message: '收藏失败!' })
+        })
     },
     editArticle() {
-      editCollectWeb(this.id, this.name, this.link, function(data) {
-        this.$app.$data.dataAddWeb = {
-          gotoPage: 'collectWebList',
-          params: {
-            success: true
+      editCollectWeb(this.id, this.name, this.link)
+        .then((data) => {
+          this.$app.$data.dataAddWeb = {
+            gotoPage: 'collectWebList',
+            params: {
+              success: true
+            }
           }
-        }
-        this.$app.$def.prompt.showToast({ message: '修改成功~' })
-        this.$app.$def.router.back()
-      }.bind(this), function(data, code) {
-        this.$app.$def.prompt.showToast({ message: data })
-      }.bind(this))
+          this.$app.$def.prompt.showToast({ message: '修改成功~' })
+          this.$app.$def.router.back()
+        })
+        .catch((err) => {
+          this.$app.$def.prompt.showToast({ message: '修改失败!' })
+        })
     }
   }
   </script>
