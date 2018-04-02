@@ -9,7 +9,7 @@
         <text class="item border-bottom" onclick="openView('CollectArticleList')">收藏的文章</text>
         <text class="item" onclick="openView('CollectWebList')">收藏的网站</text>
         <div class="item-title"></div>
-        <text class="item border-bottom" onclick="openView('about')">关于</text>
+        <text class="item border-bottom" onclick="createShortcut">创建桌面图标</text>
         <div class="item-title"></div>
         <text class="item border-bottom" onclick="openDialog">退出登录</text>
       </div>
@@ -106,6 +106,9 @@ export default {
       return
     }
     this.$app.$def.router.push({ uri: uri })
+  },
+  createShortcut () {
+    this.$app.$def.createShortcut()
   }
 }
 </script>
